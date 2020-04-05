@@ -1,1 +1,5 @@
 node_modules
+env-*.json
+.aws-sam
+/.idea/
+/package-lock.json

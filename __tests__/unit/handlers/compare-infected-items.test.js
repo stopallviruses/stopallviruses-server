@@ -47,42 +47,41 @@ describe('Test compareInfectedItemsHandler', () => {
         };
 
         // Invoke compareInfectedItemsHandler
-        const result = await lambda.compareInfectedItemsHandler(event);
+        lambda.compareInfectedItemsHandler(event,  null, (error, result) => {
 
-        const expectedResult = {
-            statusCode: 200,
-            body: JSON.stringify({
-				items,
-            	success: true,
-			}),
-        };
+			const expectedResult = {
+				statusCode: 200,
+				body: JSON.stringify({
+					ids: ["internal", "qdqsd"],
+					success: true,
+				}),
+			};
 
-        // Compare the result with the expected result
-        expect(result).toEqual(expectedResult);
+			// Compare the result with the expected result
+			expect(result).toEqual(expectedResult);
+		});
     });
 
 	// This test invokes compareInfectedItemsHandler and compares the result
 	it('should return nothing when parameters is null', async () => {
-
-
 		const event = {
 			httpMethod: 'POST'
 		};
 
 		// Invoke compareInfectedItemsHandler
-		const result = await lambda.compareInfectedItemsHandler(event);
+		lambda.compareInfectedItemsHandler(event, null, (error, result) => {
 
-		const expectedResult = {
-			statusCode: 200,
-			body: JSON.stringify({
-				'message': "Nothing to compare",
-				'item': [],
-				"success": true,
-			}),
-		};
+			const expectedResult = {
+				statusCode: 200,
+				body: JSON.stringify({
+					"success": false,
+					'message': "Nothing to get, please send ids.",
+				}),
+			};
 
-		// Compare the result with the expected result
-		expect(result).toEqual(expectedResult);
+			// Compare the result with the expected result
+			expect(result).toEqual(expectedResult);
+		});
 	});
 
 	// This test invokes compareInfectedItemsHandler and compares the result
@@ -95,18 +94,17 @@ describe('Test compareInfectedItemsHandler', () => {
 		};
 
 		// Invoke compareInfectedItemsHandler
-		const result = await lambda.compareInfectedItemsHandler(event);
+		lambda.compareInfectedItemsHandler(event, null, (error, result) => {
+			const expectedResult = {
+				statusCode: 200,
+				body: JSON.stringify({
+					"success": false,
+					'message': "Nothing to get, please send ids.",
+				}),
+			};
 
-		const expectedResult = {
-			statusCode: 200,
-			body: JSON.stringify({
-				'message': "Nothing to compare",
-				'item': [],
-				"success": true,
-			}),
-		};
-
-		// Compare the result with the expected result
-		expect(result).toEqual(expectedResult);
+			// Compare the result with the expected result
+			expect(result).toEqual(expectedResult);
+		});
 	});
 });

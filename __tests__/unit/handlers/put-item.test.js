@@ -33,17 +33,18 @@ describe('Test putItemHandler', () => {
         };
 
         // Invoke putItemHandler()
-        const result = await lambda.putItemHandler(event);
-        const expectedResult = {
-            statusCode: 200,
-            body: JSON.stringify({
-            	added: 3,
-				success: true
-			}),
-        };
+        lambda.putItemHandler(event, null, (error, result) => {
+			const expectedResult = {
+				statusCode: 200,
+				body: JSON.stringify({
+					added: 3,
+					success: true
+				}),
+			};
 
-        // Compare the result with the expected result
-        expect(result).toEqual(expectedResult);
+			// Compare the result with the expected result
+			expect(result).toEqual(expectedResult);
+		});
     });
 
 	// This test invokes putItemHandler and compares the result
@@ -58,18 +59,19 @@ describe('Test putItemHandler', () => {
 		};
 
 		// Invoke putItemHandler()
-		const result = await lambda.putItemHandler(event);
-		const expectedResult = {
-			statusCode: 200,
-			body: JSON.stringify({
-				"added": 0,
-				"message": "Nothing to add",
-				"success": true,
-			}),
-		};
+		lambda.putItemHandler(event, null, (error, result) => {
+			const expectedResult = {
+				statusCode: 200,
+				body: JSON.stringify({
+					"success": false,
+					"message": "Nothing to add, please send ids.",
 
-		// Compare the result with the expected result
-		expect(result).toEqual(expectedResult);
+				}),
+			};
+
+			// Compare the result with the expected result
+			expect(result).toEqual(expectedResult);
+		});
 	});
 
 	// This test invokes putItemHandler and compares the result
@@ -85,17 +87,17 @@ describe('Test putItemHandler', () => {
 		};
 
 		// Invoke putItemHandler()
-		const result = await lambda.putItemHandler(event);
-		const expectedResult = {
-			statusCode: 200,
-			body: JSON.stringify({
-				"added": 0,
-				"message": "Nothing to add",
-				"success": true,
-			}),
-		};
+		lambda.putItemHandler(event, null, (error, result) => {
+			const expectedResult = {
+				statusCode: 200,
+				body: JSON.stringify({
+					"success": false,
+					"message": "Nothing to add, please send ids.",
+				}),
+			};
 
-		// Compare the result with the expected result
-		expect(result).toEqual(expectedResult);
+			// Compare the result with the expected result
+			expect(result).toEqual(expectedResult);
+		});
 	});
 });
