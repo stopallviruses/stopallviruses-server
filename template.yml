@@ -20,8 +20,17 @@ Globals:
     # it has to be manually updated when you add resources to your application.
     # More information in https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html
     PermissionsBoundary: !Sub 'arn:${AWS::Partition}:iam::${AWS::AccountId}:policy/${AppId}-${AWS::Region}-PermissionsBoundary'
+  Api:
+    OpenApiVersion: 3.0.0
+    Auth:
+      ApiKeyRequired: true
+      UsagePlan:
+        CreateUsagePlan: !Ref UsagePlanType
 
 Parameters:
+  UsagePlanType:
+    Type: String
+    Default: PER_API
   AppId:
     Type: String
 
