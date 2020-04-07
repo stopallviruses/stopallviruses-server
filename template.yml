@@ -31,12 +31,12 @@ Resources:
   # Each Lambda function is defined by properties:
   # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
 
-  # This is a Lambda function config associated with the source code: compare-infected-items.js
-  compareInfectedItemsFunction:
+  # This is a Lambda function config associated with the source code: get-infected-items.js
+  getInfectedItemsFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./
-      Handler: src/handlers/compare-infected-items.compareInfectedItemsHandler
+      Handler: src/handlers/get-infected-items.getInfectedItemsHandler
       Runtime: nodejs10.x
       MemorySize: 128
       Timeout: 60
@@ -53,8 +53,8 @@ Resources:
         Api:
           Type: Api
           Properties:
-            Path: /match
-            Method: POST
+            Path: /check/{id}
+            Method: GET
   # Each Lambda function is defined by properties:
   # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
 

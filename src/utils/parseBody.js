@@ -1,16 +1,21 @@
 
-exports.getIds = function(data) {
-	let ids;
-	if (data) {
-		let dataJson = data;
-		if (typeof data === 'string') {
-			dataJson = JSON.parse(data);
-		}
-		ids = dataJson.ids || null;
-	}
-	if (!ids || !Array.isArray(ids)) {
+const putBodyObject = function (body) {
+	if (!body) {
 		return null;
 	}
 
-	return ids;
+	let bodyJson = body;
+	if (typeof body === 'string') {
+		bodyJson = JSON.parse(body);
+	}
+
+	return {
+		collected_ids: Array.isArray(bodyJson.collected_ids) ? bodyJson.collected_ids : null,
+		id: typeof bodyJson.id === 'string' ? bodyJson.id : null,
+	};
 };
+
+module.exports = {
+	putBodyObject,
+};
+
