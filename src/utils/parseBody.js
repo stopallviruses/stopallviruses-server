@@ -1,5 +1,5 @@
 
-const putBodyObject = function (body) {
+const getBodyObject = function (body) {
 	if (!body) {
 		return null;
 	}
@@ -16,6 +16,6 @@ const putBodyObject = function (body) {
 };
 
 module.exports = {
-	putBodyObject,
+	getBodyObject,
 };
 

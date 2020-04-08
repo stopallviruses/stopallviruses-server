@@ -13,19 +13,10 @@ describe('Test getInfectedItemsHandler', () => {
 		// Mock DynamoDB scan method
 		// https://jestjs.io/docs/en/jest-object.html#jestspyonobject-methodname
 		scanSpy = jest.spyOn(dynamoDb.DocumentClient.prototype, 'scan');
-	});
 
-	// Clean up mocks
-	afterAll(() => {
-		scanSpy.mockRestore();
-	});
-
-
-	it('should return infected ids', (done) => {
 		const response = {
 			Items: [
-				{submitter_id: "id1"},
-				{submitter_id: "id2"}
+				{submitter_id: "mac_infected_1"}
 			]
 		};
 
@@ -33,10 +24,17 @@ describe('Test getInfectedItemsHandler', () => {
 		scanSpy.mockImplementation((params, callback) => {
 			callback(null, response);
 		});
+	});
 
+	// Clean up mocks
+	afterAll(() => {
+		scanSpy.mockRestore();
+	});
+
+	it('should return infected ids with your mac id', (done) => {
 		const event = {
-			httpMethod: 'GET',
-			pathParameters: {id: "id5"},
+			httpMethod: 'POST',
+			body: {id: "mac1"},
 		};
 
 		// Invoke getInfectedItemsHandler
@@ -44,7 +42,8 @@ describe('Test getInfectedItemsHandler', () => {
 			const expectedResult = {
 				statusCode: 200,
 				body: JSON.stringify({
-					infected_ids: ["id1", "id2"],
+					infected_ids: ["mac_infected_1"],
+					count: 1
 				}),
 			};
 
@@ -54,10 +53,52 @@ describe('Test getInfectedItemsHandler', () => {
 		});
 	});
 
+	it('should return infected ids with your collected ids', (done) => {
+		const event = {
+			httpMethod: 'POST',
+			body: {collected_ids: ["mac1"]},
+		};
 
+		// Invoke getInfectedItemsHandler
+		lambda.getInfectedItemsHandler(event, null, (error, result) => {
+			const expectedResult = {
+				statusCode: 200,
+				body: JSON.stringify({
+					infected_ids: ["mac_infected_1"],
+					count: 1
+				}),
+			};
+
+			// Compare the result with the expected result
+			expect(result).toEqual(expectedResult);
+			done();
+		});
+	});
+
+	it('should return infected ids with both mac id and collected ids', (done) => {
+		const event = {
+			httpMethod: 'POST',
+			body: {collected_ids: ["mac1"], id: "mac2"},
+		};
+
+		// Invoke getInfectedItemsHandler
+		lambda.getInfectedItemsHandler(event, null, (error, result) => {
+			const expectedResult = {
+				statusCode: 200,
+				body: JSON.stringify({
+					infected_ids: ["mac_infected_1"],
+					count: 1
+				}),
+			};
+
+			// Compare the result with the expected result
+			expect(result).toEqual(expectedResult);
+			done();
+		});
+	});
 	it('should return error for a wrong method', (done) => {
 		const event = {
-			httpMethod: 'POST'
+			httpMethod: 'GET'
 		};
 
 		// Invoke getInfectedItemsHandler
@@ -66,7 +107,7 @@ describe('Test getInfectedItemsHandler', () => {
 			const expectedResult = {
 				statusCode: 200,
 				body: JSON.stringify({
-					'message': "only accept GET method, you tried: POST",
+					'message': "only accept POST method, you tried: GET",
 				}),
 			};
 
@@ -79,7 +120,7 @@ describe('Test getInfectedItemsHandler', () => {
 
 	it('should return nothing when parameters pathParameters is missing', async (done) => {
 		const event = {
-			httpMethod: 'GET'
+			httpMethod: 'POST'
 		};
 
 		// Invoke getInfectedItemsHandler
@@ -88,7 +129,7 @@ describe('Test getInfectedItemsHandler', () => {
 			const expectedResult = {
 				statusCode: 200,
 				body: JSON.stringify({
-					'message': "Wrong parameters, please send id into query.",
+					'message': "Wrong body parameters, please send and an id string or collected_ids [string]",
 				}),
 			};
 
@@ -101,8 +142,8 @@ describe('Test getInfectedItemsHandler', () => {
 
 	it('should return nothing when parameters id is missing', async (done) => {
 		const event = {
-			httpMethod: 'GET',
-			pathParameters: {},
+			httpMethod: 'POST',
+			body: {},
 		};
 
 		// Invoke getInfectedItemsHandler
@@ -111,7 +152,7 @@ describe('Test getInfectedItemsHandler', () => {
 			const expectedResult = {
 				statusCode: 200,
 				body: JSON.stringify({
-					'message': "Nothing to read, please send id.",
+					'message': "Wrong body parameters, please send and an id string or collected_ids [string]",
 				}),
 			};
 
@@ -124,7 +165,7 @@ describe('Test getInfectedItemsHandler', () => {
 
 	it('should return nothing when parameters id is empty', async (done) => {
 		const event = {
-			httpMethod: 'GET',
+			httpMethod: 'POST',
 			pathParameters: {id: ""},
 		};
 
@@ -134,7 +175,7 @@ describe('Test getInfectedItemsHandler', () => {
 			const expectedResult = {
 				statusCode: 200,
 				body: JSON.stringify({
-					'message': "Nothing to read, please send id.",
+					'message': "Wrong body parameters, please send and an id string or collected_ids [string]",
 				}),
 			};
 

@@ -24,7 +24,7 @@ exports.putItemHandler = (event, context, callbackApi) => {
 		return;
 	}
 
-	let bodyObject = parseBody.putBodyObject(body);
+	let bodyObject = parseBody.getBodyObject(body);
 	if (!bodyObject) {
 		response.sendError(callbackApi, `Wrong body parameters, collected_ids must be an array and id must be a string.`);
 		return;
